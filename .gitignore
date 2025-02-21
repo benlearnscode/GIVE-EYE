@@ -1,3 +1,5 @@
 *.pt
 PROJECT25/object detection/yolov3.weights
 PROJECT25/object detection/yolov3.cfg
+espcamera/object detection/yolov3.weights
+espcamera/object detection/yolov3.cfg
