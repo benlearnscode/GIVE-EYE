@@ -1,7 +1,7 @@
 # GIVE-EYE Project Setup Guide
 
 This guide describes how to initialize, configure, and run each component of the GIVE-EYE project from scratch.
-
+https://ieeexplore.ieee.org/abstract/document/11042040
 ---
 
 ## Project Structure Overview
