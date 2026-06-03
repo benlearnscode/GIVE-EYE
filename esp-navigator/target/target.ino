@@ -1,0 +1,104 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+// #include <esp_task_wdt.h> 
+#include <ArduinoJson.h> 
+#include <WebServer.h>
+
+
+const char* ssid = "Benny_Lap";
+const char* password = "benny0980";
+const char* serverURL = "http://192.168.1.13:3000/api/location";
+
+WebServer server(80);
+String currentInstruction ="";
+
+void handleInstructions(){
+  if(server.hasArg("plain")){
+    String body = server.arg("plain");
+
+    StaticJsonDocument<200>doc;
+    DeserializationError error = deserializeJson(doc, body);
+
+
+    if(!error){
+      currentInstruction = doc["instruction"].as<String>();
+      Serial.println("Recevided Instruction"+currentInstruction);
+      server.sendHeader("Content-Type", "application/json");
+      server.send(200,"application/json","{\"status\":\"Received\"}");
+      return;
+    }
+  }
+  server.send(400,"application/json","{\"error\":\"Invalid Request\"}");
+}
+
+void sendLocationData() {
+int n = WiFi.scanNetworks();
+    // esp_task_wdt_reset();  // Reset watchdog to prevent resets
+
+  Serial.println("Scanning for anchors...");
+
+  String locationData = "{";
+  bool hasAnchors = false; 
+
+  for (int i = 0; i < n; i++) {
+    String ssid = WiFi.SSID(i);
+    int rssi = WiFi.RSSI(i);
+
+    if (ssid.startsWith("Anchor")) {
+      if (hasAnchors) locationData += ","; 
+      locationData += "\"" + ssid + "\":" + String(rssi);
+      hasAnchors = true;
+    }
+  }
+
+  locationData += hasAnchors ? "}" : "{\"error\":\"no anchors found\"}";
+
+  // Debug JSON Output
+  Serial.print("JSON Sent: ");
+  Serial.println(locationData);
+
+  // Send to Node.js Server
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    http.begin(serverURL);
+    http.addHeader("Content-Type", "application/json");
+
+    int httpResponseCode = http.POST(locationData);
+    String response = http.getString();
+
+    Serial.print("Server Response Code: ");
+    Serial.println(httpResponseCode);
+    Serial.print("Server Response: ");
+    Serial.println(response);
+    Serial.println(WiFi.localIP());
+
+    http.end();
+  }
+
+}
+
+
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
+
+  server.on("/instruction", HTTP_POST, handleInstructions);  
+  server.begin();
+  Serial.println("✅ Instruction Server started!");
+  
+}
+
+
+void loop() {
+  server.handleClient();
+  sendLocationData(); 
+  Serial.println(currentInstruction);
+  // delay(100);  
+}
