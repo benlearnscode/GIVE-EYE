@@ -1,0 +1,143 @@
+/* Base container for the sidebar */
+.map-manager {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 300px;
+    height: 100vh;
+    background: #282c34;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+    transition: width 0.3s ease, padding 0.3s ease;
+  }
+  
+  /* Collapsed state: reduce width and adjust padding */
+  .map-manager.collapsed {
+    width: 50px;
+    padding: 10px;
+  }
+  
+  /* Toggle button for collapsing/expanding */
+  .collapse-toggle {
+    position: absolute;
+    left: 20px;
+    top: 10px;
+    width: 20px;
+    height: 20px;
+    background: #282c34;
+    color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid white;
+    border-radius: 21px;
+    z-index: 10;
+  }
+  
+  /* Floor selection area */
+  .floor-selection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+  .floor-selection select {
+    margin-left: 10px;
+  }
+  
+  .add-floor-btn {
+    background: #61dafb;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 10pc;
+  }
+  
+  /* Map data section */
+  .map-data-section {
+    margin-bottom: 10px;
+  }
+  
+  .map-data-display {
+    background: #444;
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 150px;
+    overflow-y: scroll;
+  }
+  
+  .map-data-buttons {
+    margin-top: 5px;
+  }
+  
+  .save-map-btn {
+    background: #4caf50;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  
+  .load-map-btn {
+    background: #008cba;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+  
+  /* Adjacency matrix section */
+  .adjacency-section {
+    margin-bottom: 10px;
+  }
+  
+  .adjacency-display {
+    background: #444;
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 150px;
+    overflow-y: scroll;
+  }
+  
+  .adjacency-buttons {
+    margin-top: 5px;
+  }
+  
+  .save-matrix-btn {
+    background: #f39c12;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  
+  .load-matrix-btn {
+    background: #e67e22;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+  
+  /* Connect floors button */
+  .connect-floors-btn {
+    background: #9b59b6;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .buttt{
+    margin: 10px;
+  }
+  
+  .selected-node {
+    background-color: green;
+    color: white;
+  }

@@ -1,14 +1,24 @@
+const espNodemap = require('../models/esp-nodemap');
+const mapp=require('../models/esp-nodemap');
+const nodepos=require('../models/node-position');
+const nodemap=require('../models/esp-nodemap');
 
 const functiond =(req,res)=>{
     console.log("ajj")
 };
 
 
-
-const getDD = (req,res)=>{
+var nnn=0;
+var rssi = 0;
+const getDD = async (req,res)=>{
     const locationData = req.body;
     console.log('Received location data:', locationData);
-    findClossestNode(locationData);
+    var closenodenamr =findClossestNode(locationData);
+    var nn= await realClose(closenodenamr.nodeId);
+    console.log(nn);
+    nnn=nn;
+    rssi=closenodenamr.rssi;
+    console.log(rssi)
     res.json({status:'sucess',message:"recieveddd"})
 };
 
@@ -25,8 +35,12 @@ function findClossestNode(dataa) {
             }
         }
     }
-    console.log('Closest device:', closest);
-    return closest;
+    console.log('Closest device:', closest, 'RSSI:', high);
+    
+    return {
+        nodeId: closest,
+        rssi: high
+    };
     
 };
 
@@ -151,21 +165,21 @@ function convertToWeightedGraph(graph) {
 //store the neighbouring nodes in the graph
 // const graph=adjacencyMatrix;
 
-graph = {
-    0: [1],
-    1: [0, 3],
-    2: [1, 3],
-    3: [2, 4],
-    4: [3, 5],
-    5: [4]
-} 
-adjacencyMatrix = graph;
+// graph = {
+//     0: [1],
+//     1: [0, 3],
+//     2: [1, 3],
+//     3: [2, 4],
+//     4: [3, 5],
+//     5: [4]
+// } 
+// adjacencyMatrix = graph;
 // add weights to the graph
 // var wgraph=convertToWeightedGraph(graph);
 
 
-const startNode = 0;
-const targetNode = 4;
+// const startNode = 0;
+// const targetNode = 4;
 
 // const result = dijkstra(wgraph, startNode, targetNode);
 // console.log(`Shortest path from ${startNode} to ${targetNode}:`, result.path);
@@ -189,4 +203,104 @@ const sendshort = (req, res) => {
 }
 
 
-module.exports ={ functiond,getDD,adjmatrix,sendshort}
+
+const saveData = (filename,data)=>{
+    const filePath = path.join(__dirname, 'maps', 'savedMap.json');
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    console.log(`Data saved to ${filePath}`);
+}
+
+const loadData = (filename)=>{
+    const filePath = path.join(mapsDir,filename);
+    if(!fs.existsSync(filePath)){
+        console.log(`File not found: ${filePath}`);
+        return null;
+    }
+    return JSON.parse(fs.readFileSync(filePath,"utf-8"));
+};
+
+
+const saveMap = (req,res)=>{
+    const {mapName, nodes, connections} = req.body;
+   if(!mapName || !nodes || !connections){
+       return res.status(400).json({error:"Invalid map data"});
+   }
+
+   const filename =`${mapName}.json`;
+   saveData(filename,{nodes,connections});
+    res.json({status:"success",message:"Map saved successfully"});
+}
+
+const loadMap = (req,res)=>{
+    const {mapName} = req.body;
+    if(!mapName){
+        return res.status(400).json({error:"Invalid map name"});
+    }
+
+    const filename =`${mapName}.json`;
+    const data = loadData(filename);
+    if(!data){
+        return res.status(404).json({error:"Map not found"});
+    }
+    res.json({status:"success",data});
+}
+
+
+const realClose = async(espname)=>{
+    try{
+        const node = await espNodemap.findOne({espNumber:espname});
+        if(!node){
+            console.log(`Node not found for ${espname}`);
+            return null;
+        }
+        return node.node;
+    }catch(error){
+        console.log(`error in fetching`,error);
+        throw error;
+    }
+}
+
+const sendnode =(req,res)=>{
+    res.json({nodeId:nnn,noderssi:rssi})
+}
+var destinationnode =0;
+
+
+
+const destinationfromuser = async (req,res)=>{
+    try{
+        const {index,name}=req.body;
+        console.log(req.body);
+
+        if(!name){
+            return res.status(400).json({ error: "Invalid request. Name is required." });
+        }
+        const locationData = await nodemap.findOne({locationOfNode: name });
+
+        if (!locationData) {
+            return res.status(404).json({ error: "Destination not found" });
+        }
+        const node = locationData.node;
+        console.log(` Found Node: ${node} for Destination: ${name}`);
+        destinationnode = node;
+        return res.status(200).json({
+            message: "Success",
+            
+        });
+
+    }catch(error){
+        console.error(" Error:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+
+}
+
+const senddes=(req,res)=>{
+    res.json({DesNode:destinationnode});
+    return 
+}
+
+
+
+
+module.exports ={ functiond,getDD,adjmatrix,sendshort,saveMap,loadMap,sendnode,destinationfromuser,senddes}
