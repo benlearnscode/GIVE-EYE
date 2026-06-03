@@ -14,7 +14,7 @@ This guide describes how to initialize, configure, and run each component of the
   * [esp-beccons](file:///D:/projects/GIVEEYE_Folder/GIVE-EYE/esp-beccons)
   * [esp-navigator](file:///D:/projects/GIVEEYE_Folder/GIVE-EYE/esp-navigator)
   * [esp-object-detector](file:///D:/projects/GIVEEYE_Folder/GIVE-EYE/esp-object-detector)
-For data about the project visit : (https://ieeexplore.ieee.org/abstract/document/11042040)
+* For data about the project visit : (https://ieeexplore.ieee.org/abstract/document/11042040)
 ---
 
 ## 🛠️ Step-by-Step Initialization
