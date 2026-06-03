@@ -1,7 +1,7 @@
 # GIVE-EYE Project Setup Guide
 
 This guide describes how to initialize, configure, and run each component of the GIVE-EYE project from scratch.
-https://ieeexplore.ieee.org/abstract/document/11042040
+
 ---
 
 ## Project Structure Overview
@@ -14,7 +14,7 @@ https://ieeexplore.ieee.org/abstract/document/11042040
   * [esp-beccons](file:///D:/projects/GIVEEYE_Folder/GIVE-EYE/esp-beccons)
   * [esp-navigator](file:///D:/projects/GIVEEYE_Folder/GIVE-EYE/esp-navigator)
   * [esp-object-detector](file:///D:/projects/GIVEEYE_Folder/GIVE-EYE/esp-object-detector)
-
+For data about the project visit : (https://ieeexplore.ieee.org/abstract/document/11042040)
 ---
 
 ## 🛠️ Step-by-Step Initialization
